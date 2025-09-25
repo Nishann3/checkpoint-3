@@ -1,26 +1,30 @@
-// eslint.config.mjs
+import globals from "globals";
+import pluginJs from "@eslint/js";
 
 export default [
   {
     ignores: [
-      "node_modules",
-      "dist",
-      "coverage",
-      ".github",
+      "**/node_modules/**",
+      "dist/**",
+      "coverage/**",
+      ".github/**"
     ],
   },
   {
     files: ["**/*.js"],
-    languageOptions: {
-      ecmaVersion: 2021,
-      sourceType: "module",
-    },
+    languageOptions: { globals: globals.node },
+    plugins: { js: pluginJs },
     rules: {
-      semi: ["error", "always"],
-      quotes: ["error", "double"],
-      "no-unused-vars": "warn",
-      "no-console": "off",
+      "no-unused-vars": "error",
+      "no-undef": "error",
+    },
+  },
+  {
+    files: ["tests/**/*.js"],
+    languageOptions: {
+      globals: {
+        ...globals.jest, // ✅ Adds test, expect, describe, beforeEach, etc.
+      },
     },
   },
 ];
-
