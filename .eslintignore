@@ -1,7 +1,0 @@
-# .eslintignore
-coverage/**
-dist/**
-node_modules/**
-.github/**
-*.md
-LICENSE
