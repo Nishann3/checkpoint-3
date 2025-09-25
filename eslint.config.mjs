@@ -16,7 +16,7 @@ export default defineConfig([
       globals: {
         ...globals.browser,
         ...globals.node,
-        ...globals.jest, // ✅ fixes "test"/"expect" not defined
+        ...globals.jest,
       },
     },
     extends: [js.configs.recommended],
