@@ -19,17 +19,12 @@ jobs:
       - run: npx eslint "**/*.{js,mjs,cjs}" --max-warnings=0
 
   test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-      - run: npm ci
-      - run: npm test -- --coverage
-      - uses: codecov/codecov-action@v3
-        with:
-          fail_ci_if_error: true
+        - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }} # required for private repos
+        files: ./coverage/lcov.info
+        fail_ci_if_error: true
 
   build:
     runs-on: ubuntu-latest
