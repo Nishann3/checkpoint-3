@@ -2,28 +2,34 @@ name: CI Pipeline
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main, develop]   # ✅ Part 1: Run on push to main or develop
   pull_request:
-    branches: [main]
+    branches: [main]            # ✅ Part 1: Run on PRs to main
 
 jobs:
+  # ------------------------------
+  # Part 1: Linting Job
+  # ------------------------------
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
           node-version: 18
       - run: npm ci
       - run: npm run lint
 
+  # ------------------------------
+  # Part 1: Testing Job
+  # ------------------------------
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
           node-version: 18
       - run: npm ci
@@ -35,29 +41,46 @@ jobs:
           files: ./coverage/lcov.info
           fail_ci_if_error: true
 
+  # ------------------------------
+  # Part 1 & Part 2: Build Job
+  # (Part 2 adds cache + artifact upload)
+  # ------------------------------
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Cache Node.js modules
+      - uses: actions/checkout@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      # ✅ Part 2: Cache node_modules
+      - name: Cache dependencies
         uses: actions/cache@v3
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-      - name: Build
-        run: npm run build
-      - name: Upload build artifact
+
+      - run: npm ci
+      - run: npm run build
+
+      # ✅ Part 2: Upload build output
+      - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: build-artifact
+          name: build
           path: dist/
 
+  # ------------------------------
+  # Part 1 & Part 3: Deploy Job
+  # (Part 3 restricts it to main branch only)
+  # ------------------------------
   deploy:
     runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'   # ✅ Part 3: Only run deploy on main
     steps:
       - name: Deploy placeholder
-        run: echo "Deploying only from main branch..."
+        run: echo "Deploy step here"
