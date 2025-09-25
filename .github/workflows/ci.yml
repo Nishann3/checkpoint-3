@@ -24,20 +24,24 @@ jobs:
   # ------------------------------
   # Part 1: Testing Job
   # ------------------------------
-  test:
+    test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x, 20.x]   # ✅ Test on multiple Node.js versions
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js
+      - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: ${{ matrix.node-version }}
+          cache: npm
       - run: npm ci
       - run: npm test -- --coverage
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          token: ${{ secrets.CODECOV_TOKEN }} # required for private repos
           files: ./coverage/lcov.info
           fail_ci_if_error: true
 
