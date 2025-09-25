@@ -5,9 +5,12 @@ import { defineConfig } from "eslint/config";
 export default defineConfig([
   {
     ignores: [
-      "coverage/**",   // ignore test coverage reports
-      "dist/**",       // ignore build output
-      "node_modules/**" // ignore dependencies
+      "coverage/**",     // ignore coverage output
+      "dist/**",         // ignore build output
+      "node_modules/**", // ignore dependencies
+      ".github/**",      // ignore GitHub workflows
+      "*.md",            // ignore markdown files
+      "LICENSE"          // ignore license file
     ],
   },
   {
@@ -16,9 +19,10 @@ export default defineConfig([
       globals: {
         ...globals.browser,
         ...globals.node,
-        ...globals.jest, // ✅ so test, expect, describe are not flagged
+        ...globals.jest,
       },
     },
     extends: [js.configs.recommended],
   },
 ]);
+
