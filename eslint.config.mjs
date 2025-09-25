@@ -1,28 +1,26 @@
-import js from "@eslint/js";
-import globals from "globals";
-import { defineConfig } from "eslint/config";
+// eslint.config.mjs
 
-export default defineConfig([
+export default [
   {
     ignores: [
-      "coverage/**",     // ignore coverage output
-      "dist/**",         // ignore build output
-      "node_modules/**", // ignore dependencies
-      ".github/**",      // ignore GitHub workflows
-      "*.md",            // ignore markdown files
-      "LICENSE"          // ignore license file
+      "node_modules",
+      "dist",
+      "coverage",
+      ".github",
     ],
   },
   {
-    files: ["**/*.{js,mjs,cjs}"],
+    files: ["**/*.js"],
     languageOptions: {
-      globals: {
-        ...globals.browser,
-        ...globals.node,
-        ...globals.jest,
-      },
+      ecmaVersion: 2021,
+      sourceType: "module",
     },
-    extends: [js.configs.recommended],
+    rules: {
+      semi: ["error", "always"],
+      quotes: ["error", "double"],
+      "no-unused-vars": "warn",
+      "no-console": "off",
+    },
   },
-]);
+];
 
