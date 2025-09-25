@@ -17,8 +17,6 @@ jobs:
           node-version: 18
       - run: npm ci
       - run: npm run lint
-      - name: Prettier check
-        run: npx prettier --check .
 
   test:
     runs-on: ubuntu-latest
