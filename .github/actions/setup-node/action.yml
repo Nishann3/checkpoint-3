@@ -1,0 +1,9 @@
+name: "Setup Node & Install"
+description: "Reusable step for Node.js setup"
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 18
+    - run: npm install
