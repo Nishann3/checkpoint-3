@@ -1,0 +1,38 @@
+name: Security Audit
+
+on:
+  schedule:
+    # Runs every day at 00:00 UTC
+    - cron: "0 0 * * *"
+  workflow_dispatch: # allow manual run too
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run npm audit
+        run: npm audit --json > audit-results.json || true
+
+      - name: Check vulnerabilities
+        run: |
+          CRITICAL=$(jq '.metadata.vulnerabilities.critical' audit-results.json)
+          HIGH=$(jq '.metadata.vulnerabilities.high' audit-results.json)
+          if [ "$CRITICAL" -gt 0 ] || [ "$HIGH" -gt 0 ]; then
+            echo "❌ Found vulnerabilities: Critical=$CRITICAL, High=$HIGH"
+            exit 1
+          else
+            echo "✅ No critical/high vulnerabilities found."
+          fi
+
